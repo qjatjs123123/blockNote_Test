@@ -6,6 +6,20 @@ import { createClient } from "@liveblocks/client";
 import {LiveblocksYjsProvider} from "@liveblocks/yjs";
 import * as Y from "yjs";
  
+async function uploadFile(file) {
+  const body = new FormData();
+  body.append("file", file);
+ 
+  const ret = await fetch("https://tmpfiles.org/api/v1/upload", {
+    method: "POST",
+    body: body,
+  });
+  return (await ret.json()).data.url.replace(
+    "tmpfiles.org/",
+    "tmpfiles.org/dl/"
+  );
+}
+
 // Sets up Liveblocks client.
 const client = createClient({
   publicApiKey:
@@ -34,9 +48,14 @@ export default function App() {
         color: "#ff0000",
       },
     },
+    uploadFile,
   });
  
   // Renders the editor instance.
-  return <BlockNoteView editor={editor} />;
+  return (
+  <div style={{marginLeft:'500px'}}>
+    <BlockNoteView editor={editor} />
+  </div>
+  );
 }
  
